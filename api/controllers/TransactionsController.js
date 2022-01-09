@@ -47,6 +47,54 @@ class TransactionsController{
     static adcdatetime(){
         this.datetime = Date()
     }
+
+    static async Listatudo(id,pesquisa){
+        const confirma = await database.wallet.findAll({
+            where:{
+                id:id
+            }
+        })
+        if(confirma.length ===0){
+            throw new Error('Wallet não existe')
+        }
+        const busca = pesquisa
+        if(typeof pesquisa !== 'string'){
+            const retorna = this.RetornaTransactions(id)
+            return retorna
+        }else{
+            const retorna = this.RetornaTransactionsQuery(id,pesquisa)
+            return retorna
+        }
+
+    }
+
+    static RetornaTransactions(id){
+        return database.coins.findAll({
+                attributes: ['coin'],
+                where:{
+                    wallet_id:id
+                },
+                    include:{
+                    model: database.transactions,
+                    attributes: { exclude: ['createdAt','updatedAt','wallet_id','id'] }
+            }
+        })  
+    }
+
+    static RetornaTransactionsQuery(id,coinsbusca){
+        const bus = coinsbusca
+        return database.coins.findAll({
+            where:{
+                wallet_id:id,
+                coin:coinsbusca
+            },
+            attributes: ['coin'],
+                include:{
+                model: database.transactions,
+                attributes: { exclude: ['createdAt','updatedAt','wallet_id','id'] }
+            }
+        }) 
+    }
 }
 
 module.exports = TransactionsController

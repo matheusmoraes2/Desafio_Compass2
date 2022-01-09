@@ -44,4 +44,32 @@ router.put('/:id' ,async (req,res) =>{
     }
 })
 
+router.post('/:id/transaction' ,async (req,res) =>{
+    try{
+        const idwallet = req.params.id
+        const corpo = req.body
+        const transaction = await CoinsController.transferencia(corpo,idwallet)
+        res.status(200).json(transaction)
+    }catch(error){
+        res.status(500).json(error.message)
+   }
+})
+
+router.get('/:id/transaction', async (req,res) =>{
+    try{
+        const busca = req.params.id
+        const pesquisa = req.query.coin
+        const resultados = await TransactionsController.Listatudo(busca,pesquisa)
+        res.status(200)
+        res.json(resultados)
+    }catch(error){
+        res.status(404).json(error.message)
+    }
+})
+router.delete('/:id' ,async (req,res) =>{
+    const busca = req.params.id
+    const deletado = await WalletController.apagar(busca)
+    res.status(204).json(deletado)
+})
+
 module.exports = router

@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       transactions.belongsTo(models.coins, {
-        foreignKey: 'coin_id'
+        foreignKey: 'coin_id',
+        onDelete: 'cascade'
       })
     }
   };

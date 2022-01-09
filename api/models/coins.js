@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'coin_id'
       })
       coins.belongsTo(models.wallet,{
-        foreignKey: 'wallet_id'
+        foreignKey: 'wallet_id',
+        onDelete: 'cascade'
       })
     }
   };

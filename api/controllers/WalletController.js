@@ -26,7 +26,7 @@ class WalletController{
             })
             this.id = criarWallet.id
             this.createdAt = criarWallet.createdAt
-            this.updatedAt = criarWallet.updatedAd
+            this.updatedAt = criarWallet.updatedAt
         
     }
 
@@ -64,6 +64,15 @@ class WalletController{
         }else{
         return retorno
         }
+    }
+
+    static async apagar(idRemove){
+        const apagado = await database.wallet.destroy({
+            where:{
+                id:idRemove
+            }
+        })
+        return apagado
     }
 
     validarName(){
