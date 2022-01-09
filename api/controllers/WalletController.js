@@ -2,6 +2,7 @@ const database = require('../models')
 const transactions = require('../models/transactions')
 const wallet = require('../models/wallet')
 const coins = require('../models/coins')
+const CoinsController = require('./CoinsController.js')
 
 class WalletController{
 
@@ -32,7 +33,6 @@ class WalletController{
     static pegartudo(busca){
         
             return database.wallet.findAll({
-                where:busca,
                 attributes: { exclude: ['createdAt','updatedAt'] },
                 include: [{
                     model: database.coins,
@@ -45,10 +45,31 @@ class WalletController{
             })     
     }
 
+    static async pegarporid(buscaId){
+        const retorno = await  database.wallet.findAll({
+            where:{id : buscaId},
+            attributes: { exclude: ['createdAt','updatedAt'] },
+            include: [{
+                model: database.coins,
+                
+                attributes: { exclude: ['createdAt','updatedAt','wallet_id','id'] },
+                include:{
+                    model: database.transactions
+                }
+            }],
+        })
+
+        if(retorno.length === 0){
+            throw new Error(`O id : ${buscaId} não foi encontrado!`)
+        }else{
+        return retorno
+        }
+    }
+
     validarName(){
         const names = this.name
       if(names.length < 7){
-           throw new error('nome deve ter mais de 7 caracteres')
+           throw new Error('Name deve ter mais de 7 caracteres')
       }
     }
 
@@ -56,7 +77,7 @@ class WalletController{
         const cpfs = this.cpf
         const formatadoCPF = String(cpfs).replace(/[^\d]/g, '')
         if(formatadoCPF.length !== 11){
-            throw new error()
+            throw new Error('Cpf inválido!')
         }
     }
 
@@ -74,7 +95,7 @@ class WalletController{
         const mesDiff = dataM - nascM
         const diaDiff = dataD - nascD
         if ((anoDiff < 18) || (anoDiff === 18 && mesDiff < 0 ) || (anoDiff === 18 && mesDiff === 0 && diaDiff < 0)){
-            throw new error()
+            throw new Error('Você deve ser maior de idade para criar uma carteira!')
         }
     }
 }
