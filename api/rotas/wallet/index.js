@@ -10,7 +10,7 @@ router.post('/', async (req,res,proximo)=>{
         await dadosCriados.AdcionaWallet()
          res.status(201).json(dadosCriados)
     }catch(error){
-        res.status(500).json(error.message)
+        res.status(400).json(error.message)
     }
 })
 
@@ -38,9 +38,9 @@ router.put('/:id' ,async (req,res) =>{
         const idwallet = req.params.id
         const corpo = req.body
         const transaction = await CoinsController.upcoin(corpo,idwallet)
-        res.status(200).json(transaction)
+        res.status(200)
     }catch(error){
-        res.status(500).json(error.message)
+        res.status(404).json(error.message)
     }
 })
 
@@ -49,9 +49,9 @@ router.post('/:id/transaction' ,async (req,res) =>{
         const idwallet = req.params.id
         const corpo = req.body
         const transaction = await CoinsController.transferencia(corpo,idwallet)
-        res.status(200).json(transaction)
+        res.status(200)
     }catch(error){
-        res.status(500).json(error.message)
+        res.status(404).json(error.message)
    }
 })
 
@@ -67,9 +67,13 @@ router.get('/:id/transaction', async (req,res) =>{
     }
 })
 router.delete('/:id' ,async (req,res) =>{
+    try{
     const busca = req.params.id
     const deletado = await WalletController.apagar(busca)
-    res.status(204).json(deletado)
+    res.status(204)
+    }catch(error){
+        res.status(404).json(error.message)
+    }
 })
 
 module.exports = router

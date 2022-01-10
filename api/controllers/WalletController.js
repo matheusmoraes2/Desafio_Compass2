@@ -3,6 +3,7 @@ const transactions = require('../models/transactions')
 const wallet = require('../models/wallet')
 const coins = require('../models/coins')
 const CoinsController = require('./CoinsController.js')
+const moment = require('moment')
 
 class WalletController{
 
@@ -19,6 +20,12 @@ class WalletController{
             this.validarName()
             this.validarCpf()
             this.validarBirthdate()
+
+            const datalocal = this.birthdate
+            const data = moment(datalocal, "DD/MM/YYYY")
+            const dateString = data.format("YYYY-MM-DD")
+            
+            this.birthdate = dateString
             const criarWallet = await database.wallet.create({
                 name : this.name,
                 cpf : this.cpf,
